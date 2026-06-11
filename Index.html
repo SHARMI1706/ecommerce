@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DRAPE — Modern Clothing</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- TOAST -->
+<div id="toast" class="toast"></div>
+
+<!-- CART DRAWER -->
+<div id="cart-overlay" class="cart-overlay" onclick="closeCart()"></div>
+<aside id="cart-drawer" class="cart-drawer">
+  <div class="cart-header">
+    <h3>Your Bag <span id="cart-count-badge">0</span></h3>
+    <button class="close-btn" onclick="closeCart()">✕</button>
+  </div>
+  <div id="cart-items" class="cart-items"></div>
+  <div class="cart-footer">
+    <div class="cart-total-row">
+      <span>Total</span>
+      <span id="cart-total">₹0</span>
+    </div>
+    <button class="btn-primary full-width" onclick="goToCheckout()">Proceed to Checkout</button>
+  </div>
+</aside>
+
+<!-- NAV -->
+<nav id="navbar" class="navbar">
+  <div class="nav-inner">
+    <button class="nav-icon-btn" onclick="showPage('home')" title="Home">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
+    </button>
+    <div class="nav-logo" onclick="showPage('home')">DRAPE</div>
+    <div class="nav-links">
+      <a onclick="filterByCategory('Men')">Men</a>
+      <a onclick="filterByCategory('Women')">Women</a>
+      <a onclick="filterByCategory('Kids')">Kids</a>
+      <a onclick="filterByCategory('Accessories')">Accessories</a>
+    </div>
+    <div class="nav-actions">
+      <button class="nav-icon-btn" onclick="showPage('account')" title="Account">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </button>
+      <button class="nav-icon-btn" onclick="showPage('orders')" title="Orders">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
+      </button>
+      <button class="nav-icon-btn cart-btn" onclick="openCart()" title="Cart">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <span id="cart-badge" class="cart-badge hidden">0</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- PAGES -->
+<main id="app"></main>
+
+<!-- TEMPLATES -->
+<template id="tpl-home">
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <span class="hero-eyebrow">New Season Arrivals</span>
+      <h1 class="hero-title">Dress the<br/><em>moment.</em></h1>
+      <p class="hero-sub">Curated styles for every occasion — minimal effort, maximum presence.</p>
+      <button class="btn-primary" onclick="showPage('shop')">Shop Now</button>
+    </div>
+    <div class="hero-scroll-label">scroll ↓</div>
+  </section>
+
+  <section class="categories-section">
+    <div class="container">
+      <h2 class="section-title">Shop by Category</h2>
+      <div class="categories-grid">
+        <div class="cat-card cat-men" onclick="filterByCategory('Men')">
+          <div class="cat-img men-img"></div>
+          <div class="cat-label">Men</div>
+        </div>
+        <div class="cat-card cat-women" onclick="filterByCategory('Women')">
+          <div class="cat-img women-img"></div>
+          <div class="cat-label">Women</div>
+        </div>
+        <div class="cat-card cat-kids" onclick="filterByCategory('Kids')">
+          <div class="cat-img kids-img"></div>
+          <div class="cat-label">Kids</div>
+        </div>
+        <div class="cat-card cat-acc" onclick="filterByCategory('Accessories')">
+          <div class="cat-img acc-img"></div>
+          <div class="cat-label">Accessories</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="featured-section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Featured Picks</h2>
+        <a class="view-all" onclick="showPage('shop')">View all →</a>
+      </div>
+      <div id="featured-products" class="products-grid"></div>
+    </div>
+  </section>
+
+  <section class="banner-section">
+    <div class="banner-inner">
+      <span>Free Delivery on orders above ₹999</span>
+      <span>·</span>
+      <span>Cash on Delivery Available</span>
+      <span>·</span>
+      <span>Easy 7-day Returns</span>
+    </div>
+  </section>
+</template>
+
+<template id="tpl-shop">
+  <section class="shop-page container">
+    <div class="shop-header">
+      <h2 class="page-title" id="shop-page-title">All Products</h2>
+      <div class="shop-controls">
+        <div class="filter-tabs" id="filter-tabs">
+          <button class="filter-tab active" onclick="filterByCategory('All')">All</button>
+          <button class="filter-tab" onclick="filterByCategory('Men')">Men</button>
+          <button class="filter-tab" onclick="filterByCategory('Women')">Women</button>
+          <button class="filter-tab" onclick="filterByCategory('Kids')">Kids</button>
+          <button class="filter-tab" onclick="filterByCategory('Accessories')">Accessories</button>
+        </div>
+        <select id="sort-select" class="sort-select" onchange="sortProducts()">
+          <option value="default">Sort: Default</option>
+          <option value="price-asc">Price: Low → High</option>
+          <option value="price-desc">Price: High → Low</option>
+          <option value="name-asc">Name: A → Z</option>
+        </select>
+      </div>
+    </div>
+    <div id="shop-products" class="products-grid"></div>
+    <div id="shop-loading" class="loading-state">Loading products…</div>
+    <div id="shop-empty" class="empty-state hidden">No products found in this category.</div>
+  </section>
+</template>
+
+<template id="tpl-product">
+  <section class="product-detail container" id="product-detail-inner"></section>
+</template>
+
+<template id="tpl-checkout">
+  <section class="checkout-page container">
+    <h2 class="page-title">Checkout</h2>
+    <div class="checkout-grid">
+      <div class="checkout-form-col">
+        <div class="form-card">
+          <h3>Delivery Details</h3>
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" id="co-name" placeholder="Priya Sharma" />
+          </div>
+          <div class="form-group">
+            <label>Phone Number</label>
+            <input type="tel" id="co-phone" placeholder="+91 98765 43210" />
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="co-email" placeholder="priya@example.com" />
+          </div>
+          <div class="form-group">
+            <label>Address Line 1</label>
+            <input type="text" id="co-addr1" placeholder="House No, Street Name" />
+          </div>
+          <div class="form-group">
+            <label>Address Line 2</label>
+            <input type="text" id="co-addr2" placeholder="Colony / Area (optional)" />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>City</label>
+              <input type="text" id="co-city" placeholder="Chennai" />
+            </div>
+            <div class="form-group">
+              <label>Pincode</label>
+              <input type="text" id="co-pin" placeholder="600001" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label>State</label>
+            <input type="text" id="co-state" placeholder="Tamil Nadu" />
+          </div>
+        </div>
+
+        <div class="form-card">
+          <h3>Payment Method</h3>
+          <div class="payment-option selected" id="cod-option">
+            <div class="payment-radio"></div>
+            <div class="payment-info">
+              <strong>Cash on Delivery</strong>
+              <span>Pay when your order arrives</span>
+            </div>
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8FAF8C" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M2 10h20"/></svg>
+          </div>
+          <p class="cod-note">💡 We currently support Cash on Delivery only. More payment options coming soon!</p>
+        </div>
+      </div>
+
+      <div class="checkout-summary-col">
+        <div class="form-card summary-card">
+          <h3>Order Summary</h3>
+          <div id="co-items-list"></div>
+          <div class="summary-divider"></div>
+          <div class="summary-row"><span>Subtotal</span><span id="co-subtotal">₹0</span></div>
+          <div class="summary-row"><span>Delivery</span><span id="co-delivery">₹0</span></div>
+          <div class="summary-row total-row"><span>Total</span><span id="co-total">₹0</span></div>
+          <button class="btn-primary full-width mt-16" onclick="placeOrder()">Place Order (COD)</button>
+          <p class="secure-note">🔒 Your information is safe with us</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</template>
+
+<template id="tpl-order-success">
+  <section class="success-page">
+    <div class="success-card">
+      <div class="success-icon">✓</div>
+      <h2>Order Placed!</h2>
+      <p>Thank you for your order. Your items will be delivered soon.</p>
+      <p class="order-id-label">Order ID: <strong id="success-order-id"></strong></p>
+      <p class="cod-reminder">💵 Please keep cash ready at the time of delivery.</p>
+      <div class="success-actions">
+        <button class="btn-primary" onclick="showPage('orders')">View My Orders</button>
+        <button class="btn-secondary" onclick="showPage('shop')">Continue Shopping</button>
+      </div>
+    </div>
+  </section>
+</template>
+
+<template id="tpl-orders">
+  <section class="orders-page container">
+    <h2 class="page-title">My Orders</h2>
+    <div id="orders-list"></div>
+    <div id="orders-loading" class="loading-state">Loading orders…</div>
+    <div id="orders-empty" class="empty-state hidden">
+      <p>No orders yet.</p>
+      <button class="btn-primary mt-16" onclick="showPage('shop')">Start Shopping</button>
+    </div>
+  </section>
+</template>
+
+<template id="tpl-account">
+  <section class="account-page container">
+    <div id="auth-section"></div>
+  </section>
+</template>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
